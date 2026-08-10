@@ -390,3 +390,96 @@ def test_chat_rate_limiting(mock_ask):
     assert "too many requests" in res.json()["detail"].lower()
 
     app.dependency_overrides.clear()
+
+
+def test_every_followup_intents():
+    """
+    Verify all follow-up conversational intents and states in the simulation fallback.
+    """
+    with patch.dict(os.environ, {"XAI_API_KEY": "", "GEMINI_API_KEY": ""}):
+        app.dependency_overrides[get_current_user] = lambda: {
+            "fullName": "Test Operator",
+            "role": "admin",
+            "id": "test_operator_id"
+        }
+
+        # Case 1: Alert + Announcement Draft Confirmation (yes/yess)
+        payload_1 = {
+            "message": "yess",
+            "history": [
+                {"sender": "user", "text": "Are there any active alerts?"},
+                {"sender": "assistant", "text": "Active system notifications:\n- [Critical] every train wii be stoped for few mintues due to some technical issue\n\nLet me know if you would like me to draft an announcement."}
+            ]
+        }
+        response_1 = client.post("/ai/chat", json=payload_1)
+        assert response_1.status_code == 200
+        reply_1 = response_1.json()["response"]
+        assert "📢 **SYSTEM ANNOUNCEMENT: SERVICE SUSPENSION**" in reply_1
+
+        # Case 2: Delays + Solution/Action
+        payload_2 = {
+            "message": "how to resolve",
+            "history": [
+                {"sender": "user", "text": "Show active train delays"},
+                {"sender": "assistant", "text": "Active delays: T-AQU7-02 (Aqua Line), T-GRA11-05 (Gray Line), Red Line delays."}
+            ]
+        }
+        response_2 = client.post("/ai/chat", json=payload_2)
+        assert response_2.status_code == 200
+        reply_2 = response_2.json()["response"]
+        assert "standby trains" in reply_2 or "headways" in reply_2
+
+        # Case 3: Congestion + Location
+        payload_3 = {
+            "message": "where are they",
+            "history": [
+                {"sender": "user", "text": "List congested stations"},
+                {"sender": "assistant", "text": "Congested stations include Kashmere Gate, Noida Sector 145, Shadipur."}
+            ]
+        }
+        response_3 = client.post("/ai/chat", json=payload_3)
+        assert response_3.status_code == 200
+        reply_3 = response_3.json()["response"]
+        assert "Kashmere Gate" in reply_3 or "IGI Airport" in reply_3
+
+        app.dependency_overrides.clear()
+
+
+
+def test_generate_report_endpoint():
+    """
+    Test generating reports with various mock user permissions.
+    """
+    # 1. Test user role cannot generate report (requires admin or manager)
+    app.dependency_overrides[get_current_user] = lambda: {
+        "fullName": "Normal User",
+        "role": "user",
+        "id": "user_id_1"
+    }
+    
+    response = client.get("/reports/generate")
+    assert response.status_code == 403
+    
+    # 2. Test manager role can generate report
+    app.dependency_overrides[get_current_user] = lambda: {
+        "fullName": "Manager User",
+        "role": "manager",
+        "id": "manager_id_1"
+    }
+    
+    response = client.get("/reports/generate?report_type=System+Summary")
+    assert response.status_code == 200
+    
+    data = response.json()
+    assert "report_id" in data
+    assert "generated_at" in data
+    assert "summary_metrics" in data
+    assert "predictions_log" in data
+    assert "station_metrics" in data
+    assert "route_metrics" in data
+    assert "active_alerts" in data
+    assert "ai_insights" in data
+    
+    app.dependency_overrides.clear()
+
+

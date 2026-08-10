@@ -30,6 +30,7 @@ from app.api.analytics import router as analytics_router
 from app.api import prediction_history
 from app.api.alerts import router as alerts_router
 from app.api.chat import router as chat_router
+from app.api.reports import router as reports_router
 
 # ==========================
 # FastAPI App
@@ -70,6 +71,7 @@ app.include_router(analytics_router)
 app.include_router(prediction_history.router)
 app.include_router(alerts_router)
 app.include_router(chat_router)
+app.include_router(reports_router)
 
 
 # ==========================

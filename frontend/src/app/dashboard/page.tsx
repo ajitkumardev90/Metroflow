@@ -209,97 +209,222 @@ export default function Dashboard() {
 
             {/* SVG Interactive Metro Lines Schematic Map */}
             <div className="relative flex-1 flex items-center justify-center min-h-[300px]">
-              <svg className="w-full h-full max-h-[320px]" viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg">
+              <svg className="w-full h-full max-h-[320px]" viewBox="0 0 550 320" xmlns="http://www.w3.org/2000/svg">
                 {/* Schematic Background Tracks */}
-                {/* Red Line Track Vector */}
-                <path d="M 60 70 L 440 70" fill="none" stroke="#dc2626" strokeWidth="4" strokeLinecap="round" />
-                {/* Yellow Line Track Vector */}
-                <path d="M 250 70 L 250 240" fill="none" stroke="#eab308" strokeWidth="4" strokeLinecap="round" />
-                {/* Blue Line Track Vector */}
-                <path d="M 80 150 L 450 150" fill="none" stroke="#2563eb" strokeWidth="4" strokeLinecap="round" />
+                {/* Red Line */}
+                <path d="M 60 70 L 490 70" fill="none" stroke="#dc2626" strokeWidth="3" strokeLinecap="round" />
+                {/* Yellow Line */}
+                <path d="M 250 20 L 250 300" fill="none" stroke="#eab308" strokeWidth="3" strokeLinecap="round" />
+                {/* Blue Line */}
+                <path d="M 60 150 L 490 150" fill="none" stroke="#2563eb" strokeWidth="3" strokeLinecap="round" />
+                {/* Violet Line */}
+                <path d="M 250 70 L 310 150 L 250 190 L 330 230 L 370 270" fill="none" stroke="#8b5cf6" strokeWidth="3" strokeLinecap="round" />
+                {/* Pink Line */}
+                <path d="M 150 70 L 150 110 C 150 160, 200 230, 250 230 L 330 230 C 350 230, 370 180, 370 70" fill="none" stroke="#ec4899" strokeWidth="3" strokeLinecap="round" />
+                {/* Magenta Line */}
+                <path d="M 250 300 L 370 270 L 400 150" fill="none" stroke="#db2777" strokeWidth="3" strokeLinecap="round" />
 
-                {/* Stations Nodes (Pulsing Glow Rings according to crowd status) */}
-                {/* Kashmere Gate (Red/Yellow Interchange) */}
-                <circle cx="250" cy="70" r="12" fill="#ef4444" fillOpacity="0.15" className="animate-ping" style={{ animationDuration: '4s' }} />
+                {/* INTERCHANGES & STATIONS NODES */}
+                {/* Kashmere Gate (Red/Yellow/Violet Interchange) */}
+                <circle cx="250" cy="70" r="10" fill="#ef4444" fillOpacity="0.15" className="animate-ping" style={{ animationDuration: '4s' }} />
                 <circle
-                  cx="250" cy="70" r="6" fill="#1e293b" stroke="#ef4444" strokeWidth="3"
-                  onMouseEnter={() => setHoveredStation({ name: "Kashmere Gate", line: "Red / Yellow Interchange", density: "Normal", load: "340 Pax", layout: "Elevated" })}
+                  cx="250" cy="70" r="5.5" fill="#1e293b" stroke="#ef4444" strokeWidth="2.5"
+                  onMouseEnter={() => setHoveredStation({ name: "Kashmere Gate", line: "Red / Yellow / Violet Interchange", density: "Normal", load: "340 Pax", layout: "Underground/Elevated" })}
                   onMouseLeave={() => setHoveredStation(null)}
                   className="cursor-pointer"
                 />
 
                 {/* Rajiv Chowk (Yellow/Blue Interchange) - Critical Overcrowding */}
-                <circle cx="250" cy="150" r="16" fill="#ef4444" fillOpacity="0.15" className="animate-ping" style={{ animationDuration: '3s' }} />
+                <circle cx="250" cy="150" r="14" fill="#ef4444" fillOpacity="0.15" className="animate-ping" style={{ animationDuration: '3s' }} />
                 <circle
-                  cx="250" cy="150" r="8" fill="#991b1b" stroke="#eab308" strokeWidth="3"
+                  cx="250" cy="150" r="7.5" fill="#991b1b" stroke="#eab308" strokeWidth="3"
                   onMouseEnter={() => setHoveredStation({ name: "Rajiv Chowk", line: "Yellow / Blue Interchange", density: "Critical (Very High)", load: "2,450 Pax", layout: "Underground" })}
                   onMouseLeave={() => setHoveredStation(null)}
                   className="cursor-pointer"
                 />
 
-                {/* AIIMS (Yellow Line) */}
-                <circle cx="250" cy="230" r="10" fill="#eab308" fillOpacity="0.1" />
+                {/* Mandi House (Blue/Violet Interchange) */}
+                <circle cx="310" cy="150" r="9" fill="#8b5cf6" fillOpacity="0.1" />
                 <circle
-                  cx="250" cy="230" r="5" fill="#ca8a04" stroke="#eab308" strokeWidth="2.5"
+                  cx="310" cy="150" r="5" fill="#1e293b" stroke="#8b5cf6" strokeWidth="2"
+                  onMouseEnter={() => setHoveredStation({ name: "Mandi House", line: "Blue / Violet Interchange", density: "Normal", load: "680 Pax", layout: "Underground" })}
+                  onMouseLeave={() => setHoveredStation(null)}
+                  className="cursor-pointer"
+                />
+
+                {/* Central Secretariat (Yellow/Violet Interchange) */}
+                <circle cx="250" cy="190" r="9" fill="#eab308" fillOpacity="0.1" />
+                <circle
+                  cx="250" cy="190" r="5" fill="#1e293b" stroke="#eab308" strokeWidth="2"
+                  onMouseEnter={() => setHoveredStation({ name: "Central Secretariat", line: "Yellow / Violet Interchange", density: "Normal", load: "510 Pax", layout: "Underground" })}
+                  onMouseLeave={() => setHoveredStation(null)}
+                  className="cursor-pointer"
+                />
+
+                {/* Dilli Haat INA (Yellow/Pink Interchange) */}
+                <circle cx="250" cy="230" r="10" fill="#ec4899" fillOpacity="0.15" />
+                <circle
+                  cx="250" cy="230" r="5.5" fill="#1e293b" stroke="#ec4899" strokeWidth="2"
+                  onMouseEnter={() => setHoveredStation({ name: "Dilli Haat INA", line: "Yellow / Pink Interchange", density: "Medium Load", load: "920 Pax", layout: "Underground" })}
+                  onMouseLeave={() => setHoveredStation(null)}
+                  className="cursor-pointer"
+                />
+
+                {/* Lajpat Nagar (Pink/Violet Interchange) */}
+                <circle cx="330" cy="230" r="9" fill="#ec4899" fillOpacity="0.1" />
+                <circle
+                  cx="330" cy="230" r="5" fill="#1e293b" stroke="#ec4899" strokeWidth="2"
+                  onMouseEnter={() => setHoveredStation({ name: "Lajpat Nagar", line: "Pink / Violet Interchange", density: "Medium Load", load: "790 Pax", layout: "Elevated" })}
+                  onMouseLeave={() => setHoveredStation(null)}
+                  className="cursor-pointer"
+                />
+
+                {/* Hauz Khas (Yellow/Magenta Interchange) */}
+                <circle cx="250" cy="300" r="10" fill="#db2777" fillOpacity="0.15" />
+                <circle
+                  cx="250" cy="300" r="5.5" fill="#1e293b" stroke="#db2777" strokeWidth="2"
+                  onMouseEnter={() => setHoveredStation({ name: "Hauz Khas", line: "Yellow / Magenta Interchange", density: "High Load", load: "1,380 Pax", layout: "Underground" })}
+                  onMouseLeave={() => setHoveredStation(null)}
+                  className="cursor-pointer"
+                />
+
+                {/* Kalkaji Mandir (Violet/Magenta Interchange) */}
+                <circle cx="370" cy="270" r="10" fill="#db2777" fillOpacity="0.15" />
+                <circle
+                  cx="370" cy="270" r="5.5" fill="#1e293b" stroke="#db2777" strokeWidth="2"
+                  onMouseEnter={() => setHoveredStation({ name: "Kalkaji Mandir", line: "Violet / Magenta Interchange", density: "High Load", load: "1,210 Pax", layout: "Underground" })}
+                  onMouseLeave={() => setHoveredStation(null)}
+                  className="cursor-pointer"
+                />
+
+                {/* Botanical Garden (Blue/Magenta Interchange) */}
+                <circle cx="400" cy="150" r="10" fill="#db2777" fillOpacity="0.15" />
+                <circle
+                  cx="400" cy="150" r="5.5" fill="#1e293b" stroke="#db2777" strokeWidth="2"
+                  onMouseEnter={() => setHoveredStation({ name: "Botanical Garden", line: "Blue / Magenta Interchange", density: "High Load", load: "1,120 Pax", layout: "Elevated" })}
+                  onMouseLeave={() => setHoveredStation(null)}
+                  className="cursor-pointer"
+                />
+
+                {/* Netaji Subhash Place (Red/Pink Interchange) */}
+                <circle cx="150" cy="70" r="9" fill="#ec4899" fillOpacity="0.1" />
+                <circle
+                  cx="150" cy="70" r="5" fill="#1e293b" stroke="#ec4899" strokeWidth="2"
+                  onMouseEnter={() => setHoveredStation({ name: "Netaji Subhash Place", line: "Red / Pink Interchange", density: "Normal", load: "480 Pax", layout: "Elevated" })}
+                  onMouseLeave={() => setHoveredStation(null)}
+                  className="cursor-pointer"
+                />
+
+                {/* Welcome (Red/Pink Interchange) */}
+                <circle cx="370" cy="70" r="9" fill="#ec4899" fillOpacity="0.1" />
+                <circle
+                  cx="370" cy="70" r="5" fill="#1e293b" stroke="#ec4899" strokeWidth="2"
+                  onMouseEnter={() => setHoveredStation({ name: "Welcome", line: "Red / Pink Interchange", density: "Normal", load: "390 Pax", layout: "Elevated" })}
+                  onMouseLeave={() => setHoveredStation(null)}
+                  className="cursor-pointer"
+                />
+
+                {/* NON-INTERCHANGE NODES */}
+                {/* Rithala (Red Line terminus) */}
+                <circle cx="80" cy="70" r="5" fill="#dc2626" />
+                <circle
+                  cx="80" cy="70" r="3.5" fill="#1e293b" stroke="#dc2626" strokeWidth="1.5"
+                  onMouseEnter={() => setHoveredStation({ name: "Rithala", line: "Red Line", density: "Normal", load: "190 Pax", layout: "Elevated" })}
+                  onMouseLeave={() => setHoveredStation(null)}
+                  className="cursor-pointer"
+                />
+
+                {/* Dilshad Garden (Red Line) */}
+                <circle cx="450" cy="70" r="5" fill="#dc2626" />
+                <circle
+                  cx="450" cy="70" r="3.5" fill="#1e293b" stroke="#dc2626" strokeWidth="1.5"
+                  onMouseEnter={() => setHoveredStation({ name: "Dilshad Garden", line: "Red Line", density: "Normal", load: "280 Pax", layout: "Elevated" })}
+                  onMouseLeave={() => setHoveredStation(null)}
+                  className="cursor-pointer"
+                />
+
+                {/* Samaypur Badli (Yellow Line terminus) */}
+                <circle cx="250" cy="20" r="5" fill="#eab308" />
+                <circle
+                  cx="250" cy="20" r="3.5" fill="#1e293b" stroke="#eab308" strokeWidth="1.5"
+                  onMouseEnter={() => setHoveredStation({ name: "Samaypur Badli", line: "Yellow Line", density: "Normal", load: "220 Pax", layout: "Elevated" })}
+                  onMouseLeave={() => setHoveredStation(null)}
+                  className="cursor-pointer"
+                />
+
+                {/* AIIMS (Yellow Line) */}
+                <circle cx="250" cy="265" r="7" fill="#eab308" fillOpacity="0.1" />
+                <circle
+                  cx="250" cy="265" r="4" fill="#ca8a04" stroke="#eab308" strokeWidth="2"
                   onMouseEnter={() => setHoveredStation({ name: "AIIMS", line: "Yellow Line", density: "Normal", load: "420 Pax", layout: "Underground" })}
                   onMouseLeave={() => setHoveredStation(null)}
                   className="cursor-pointer"
                 />
 
                 {/* Karol Bagh (Blue Line) */}
-                <circle cx="110" cy="150" r="10" fill="#3b82f6" fillOpacity="0.15" />
+                <circle cx="110" cy="150" r="7" fill="#3b82f6" fillOpacity="0.1" />
                 <circle
-                  cx="110" cy="150" r="5" fill="#1e3a8a" stroke="#3b82f6" strokeWidth="2.5"
+                  cx="110" cy="150" r="4" fill="#1e3a8a" stroke="#3b82f6" strokeWidth="2"
                   onMouseEnter={() => setHoveredStation({ name: "Karol Bagh", line: "Blue Line", density: "Medium Load", load: "840 Pax", layout: "Elevated" })}
                   onMouseLeave={() => setHoveredStation(null)}
                   className="cursor-pointer"
                 />
 
-                {/* Mandi House (Blue Line) */}
-                <circle cx="350" cy="150" r="10" fill="#22c55e" fillOpacity="0.1" />
-                <circle
-                  cx="350" cy="150" r="5" fill="#166534" stroke="#3b82f6" strokeWidth="2.5"
-                  onMouseEnter={() => setHoveredStation({ name: "Mandi House", line: "Blue Line", density: "Normal", load: "290 Pax", layout: "Underground" })}
-                  onMouseLeave={() => setHoveredStation(null)}
-                  className="cursor-pointer"
-                />
-
                 {/* Noida Sector 62 (Blue Line) */}
-                <circle cx="440" cy="150" r="10" fill="#f97316" fillOpacity="0.15" />
+                <circle cx="450" cy="150" r="7" fill="#3b82f6" fillOpacity="0.1" />
                 <circle
-                  cx="440" cy="150" r="5" fill="#9a3412" stroke="#3b82f6" strokeWidth="2.5"
-                  onMouseEnter={() => setHoveredStation({ name: "Noida Sector 62", line: "Blue Line", density: "High Load", load: "1,120 Pax", layout: "Elevated" })}
+                  cx="450" cy="150" r="4" fill="#1e3a8a" stroke="#3b82f6" strokeWidth="2"
+                  onMouseEnter={() => setHoveredStation({ name: "Noida Sector 62", line: "Blue Line", density: "Normal", load: "310 Pax", layout: "Elevated" })}
                   onMouseLeave={() => setHoveredStation(null)}
                   className="cursor-pointer"
                 />
 
-                {/* Animated Train Node on Yellow Line */}
+                {/* ANIMATED ROLLING TRAINS */}
+                {/* Train on Yellow Line */}
                 <g
                   className="cursor-pointer"
                   onMouseEnter={() => setHoveredTrain({ id: "T-YEL-02", name: "Yellow Line Express", speed: "55 km/h", status: "Active", capacity: "1,500 Pax" })}
                   onMouseLeave={() => setHoveredTrain(null)}
                 >
-                  <circle cx="250" cy="110" r="7" fill="#fca5a5" className="animate-ping" style={{ animationDuration: '2.5s' }} />
-                  <polygon points="246,114 254,114 250,104" fill="#eab308" />
+                  <circle cx="250" cy="110" r="6" fill="#fca5a5" className="animate-ping" style={{ animationDuration: '2.5s' }} />
+                  <polygon points="246,114 254,114 250,105" fill="#eab308" />
                 </g>
 
-                {/* Animated Train Node on Blue Line */}
+                {/* Train on Blue Line */}
                 <g
                   className="cursor-pointer"
                   onMouseEnter={() => setHoveredTrain({ id: "T-BLU-05", name: "Blue Line Local", speed: "0 km/h (Stopped)", status: "Delayed", capacity: "1,500 Pax" })}
                   onMouseLeave={() => setHoveredTrain(null)}
                 >
-                  <circle cx="180" cy="150" r="7" fill="#93c5fd" className="animate-ping" style={{ animationDuration: '1.8s' }} />
-                  <polygon points="176,154 184,154 180,144" fill="#3b82f6" />
+                  <circle cx="180" cy="150" r="6" fill="#93c5fd" className="animate-ping" style={{ animationDuration: '1.8s' }} />
+                  <polygon points="176,154 184,154 180,145" fill="#3b82f6" />
                 </g>
 
-                {/* Labels (Color coded to match their lines) */}
-                <text x="265" y="66" fill="#ef4444" fontSize="8" fontWeight="bold">Kashmere Gate</text>
-                <text x="268" y="146" fill="#eab308" fontSize="8" fontWeight="black" className="animate-pulse">Rajiv Chowk (HUB)</text>
-                <text x="265" y="234" fill="#eab308" fontSize="8" fontWeight="bold">AIIMS</text>
-                <text x="75" y="136" fill="#3b82f6" fontSize="8" fontWeight="bold">Karol Bagh</text>
-                <text x="315" y="136" fill="#3b82f6" fontSize="8" fontWeight="bold">Mandi House</text>
-                <text x="405" y="136" fill="#3b82f6" fontSize="8" fontWeight="bold">Noida Sec 62</text>
+                {/* STATION LABELS */}
+                {/* Red Line Labels */}
+                <text x="50" y="60" fill="#dc2626" fontSize="6.5" fontWeight="bold">Rithala</text>
+                <text x="120" y="55" fill="#ec4899" fontSize="6.5" fontWeight="bold">Netaji Subhash Pl</text>
+                <text x="256" y="64" fill="#dc2626" fontSize="6.5" fontWeight="bold">Kashmere Gate</text>
+                <text x="376" y="60" fill="#ec4899" fontSize="6.5" fontWeight="bold">Welcome</text>
+                <text x="440" y="60" fill="#dc2626" fontSize="6.5" fontWeight="bold">Dilshad Gdn</text>
+
+                {/* Yellow Line Labels */}
+                <text x="260" y="24" fill="#eab308" fontSize="6.5" fontWeight="bold">Samaypur Badli</text>
+                <text x="260" y="146" fill="#eab308" fontSize="7" fontWeight="black" className="animate-pulse">Rajiv Chowk (HUB)</text>
+                <text x="260" y="186" fill="#eab308" fontSize="6.5" fontWeight="bold">Central Sec</text>
+                <text x="260" y="226" fill="#ec4899" fontSize="6.5" fontWeight="bold">INA</text>
+                <text x="260" y="260" fill="#eab308" fontSize="6.5" fontWeight="bold">AIIMS</text>
+                <text x="260" y="296" fill="#db2777" fontSize="6.5" fontWeight="bold">Hauz Khas</text>
+
+                {/* Blue Line Labels */}
+                <text x="80" y="136" fill="#3b82f6" fontSize="6.5" fontWeight="bold">Karol Bagh</text>
+                <text x="315" y="136" fill="#8b5cf6" fontSize="6.5" fontWeight="bold">Mandi House</text>
+                <text x="390" y="136" fill="#db2777" fontSize="6.5" fontWeight="bold">Botanical Gdn</text>
+                <text x="445" y="136" fill="#2563eb" fontSize="6.5" fontWeight="bold">Noida Sec 62</text>
+
+                {/* Violet, Pink, Magenta Interchange Labels */}
+                <text x="336" y="222" fill="#ec4899" fontSize="6.5" fontWeight="bold">Lajpat Nagar</text>
+                <text x="376" y="262" fill="#db2777" fontSize="6.5" fontWeight="bold">Kalkaji Mandir</text>
               </svg>
 
               {/* Station details popup overlay */}

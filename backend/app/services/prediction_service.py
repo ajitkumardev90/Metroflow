@@ -10,21 +10,21 @@ from app.models.passenger_data import PassengerData
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
-MODEL_A_PATH = os.path.join(
+CROWD_REGRESSOR_PATH = os.path.join(
     BASE_DIR,
     "ai",
     "models",
     "crowd_prediction.pkl"
 )
 
-MODEL_B_PATH = os.path.join(
+DEMAND_FORECASTER_PATH = os.path.join(
     BASE_DIR,
     "ai",
     "models",
     "demand_forecast.pkl"
 )
 
-MODEL_C_PATH = os.path.join(
+CONGESTION_CLASSIFIER_PATH = os.path.join(
     BASE_DIR,
     "ai",
     "models",
@@ -40,9 +40,9 @@ ENCODER_PATH = os.path.join(
 
 print("Loading AI Models...")
 
-model_a = joblib.load(MODEL_A_PATH)
-model_b = joblib.load(MODEL_B_PATH)
-model_c = joblib.load(MODEL_C_PATH)
+crowd_regressor = joblib.load(CROWD_REGRESSOR_PATH)
+demand_forecaster = joblib.load(DEMAND_FORECASTER_PATH)
+congestion_classifier = joblib.load(CONGESTION_CLASSIFIER_PATH)
 encoders = joblib.load(ENCODER_PATH)
 
 print("AI Models Loaded Successfully!")
@@ -70,7 +70,7 @@ def safe_transform(encoder, val, default_val=None):
 
 
 def predict_crowd(data, db: Session = None):
-    # 1. Model A - Crowd Count Prediction
+    # 1. Crowd Count Regressor - Passenger count prediction
     encoded_data = {
         "Hour": data.hour,
         "Day_Name": safe_transform(encoders["Day_Name"], data.day_name),
@@ -85,7 +85,7 @@ def predict_crowd(data, db: Session = None):
     }
 
     df = pd.DataFrame([encoded_data])
-    prediction = int(model_a.predict(df)[0])
+    prediction = int(crowd_regressor.predict(df)[0])
 
     if prediction < 1200:
         crowd_level = "Low"
@@ -104,7 +104,7 @@ def predict_crowd(data, db: Session = None):
         crowd_level=crowd_level
     )
 
-    # 2. Model C - Congestion Classification
+    # 2. Congestion Classifier - Peak/Off-peak categorization
     encoded_c = {
         "Hour": data.hour,
         "Day_Name": safe_transform(encoders["Day_Name"], data.day_name),
@@ -117,10 +117,10 @@ def predict_crowd(data, db: Session = None):
         "Is_Interchange": int(data.is_interchange)
     }
     df_c = pd.DataFrame([encoded_c])
-    is_congested = int(model_c.predict(df_c)[0])
+    is_congested = int(congestion_classifier.predict(df_c)[0])
     congestion_status = "Congested" if is_congested == 1 else "Normal"
 
-    # 3. Model D - Scheduling Recommendations
+    # 3. Scheduling Optimizer - Headway and frequency logic
     # Find any active delays on the route or station (if DB session is provided)
     delay_min = 0
     if db:
@@ -144,7 +144,7 @@ def predict_crowd(data, db: Session = None):
         delay_min=delay_min
     )
 
-    # 4. Model B - Passenger Demand Forecasting (Next 3 Hours)
+    # 4. Passenger Demand Forecaster - Hourly demand forecasting (Next 3 Hours)
     # Query database for current lag ridership count if DB session is provided
     lag_value = 250
     if db:
@@ -174,7 +174,7 @@ def predict_crowd(data, db: Session = None):
             "Passenger_Lag_1": current_lag
         }
         df_step = pd.DataFrame([encoded_step])
-        pred_step = max(50, int(model_b.predict(df_step)[0]))
+        pred_step = max(50, int(demand_forecaster.predict(df_step)[0]))
         forecasts.append({
             "hour": target_hour,
             "predicted_demand": pred_step

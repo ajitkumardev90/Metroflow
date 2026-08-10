@@ -33,7 +33,7 @@ MODEL_FILE = os.path.join(
 METRICS_FILE = os.path.join(
     BASE_DIR,
     "models",
-    "model_a_metrics.json"
+    "crowd_regressor_metrics.json"
 )
 
 # ----------------------------
@@ -133,5 +133,5 @@ metrics = {
 with open(METRICS_FILE, "w") as f:
     json.dump(metrics, f, indent=4)
 
-print("Model A metrics saved to:", METRICS_FILE)
+print("Crowd Count Regressor metrics saved to:", METRICS_FILE)
 print("Training Completed Successfully!")

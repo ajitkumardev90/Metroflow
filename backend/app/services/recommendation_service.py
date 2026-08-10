@@ -34,7 +34,7 @@ def get_recommendations(crowd_level: str):
 
 def optimize_schedule(predicted_passengers: int, crowd_level: str, capacity: int = 1500, delay_min: int = 0):
     """
-    Model D - Scheduling & Frequency Optimizer.
+    Scheduling Optimizer - Frequency & Headway adjustments.
     Outputs frequency, headway, train allocation adjustments, and explanation.
     """
     # 1. Base headway (minutes) and frequency (trains per hour) based on crowd level

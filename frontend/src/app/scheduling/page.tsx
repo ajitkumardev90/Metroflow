@@ -181,7 +181,7 @@ export default function SchedulingPage() {
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
                 <Zap size={16} className="text-cyan-400" />
-                <span className="font-mono text-xs font-bold tracking-widest text-cyan-400 uppercase">AI TIMETABLE OPTIMIZER (MODEL D)</span>
+                <span className="font-mono text-xs font-bold tracking-widest text-cyan-400 uppercase">AI TIMETABLE OPTIMIZER (SCHEDULING OPTIMIZER)</span>
               </div>
               <h3 className="text-sm font-bold font-mono text-slate-200">
                 Recommended Frequency for line:{" "}

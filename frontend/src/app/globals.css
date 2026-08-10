@@ -167,3 +167,79 @@ body {
   animation: metroRun 18s linear infinite;
 }
 
+/* Screen-only rules */
+@media screen {
+  .printable-content {
+    display: none !important;
+  }
+}
+
+/* Print Overrides to ensure reports print correctly */
+@media print {
+  /* Force page root properties */
+  html, body {
+    background-color: #ffffff !important;
+    background-image: none !important;
+    color: #000000 !important;
+    height: auto !important;
+    min-height: 100% !important;
+    overflow: visible !important;
+    position: static !important;
+    width: 100% !important;
+  }
+  
+  /* Reset structural parent layouts to block flow (ignores children of .printable-content) */
+  main, div:not(.printable-content *), section:not(.printable-content *) {
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    position: static !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .screen-only {
+    display: none !important;
+  }
+
+  /* Force print target report container display */
+  .printable-content {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    width: 100% !important;
+    height: auto !important;
+    padding: 20px !important;
+    margin: 0 auto !important;
+    position: relative !important;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+
+  .print\:block {
+    display: block !important;
+  }
+
+  /* Force print text colors */
+  .print\:text-black {
+    color: #000000 !important;
+  }
+
+  .print\:bg-white {
+    background-color: #ffffff !important;
+  }
+}
+
+
+

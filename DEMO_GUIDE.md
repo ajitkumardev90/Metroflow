@@ -50,9 +50,9 @@ Follow this step-by-step walkthrough to verify all core platform features.
 1. Navigate to **AI Predictions** in the sidebar.
 2. Configure travel segment inputs (e.g., set Hour to `9`, Weather to `Rain`, interchange check to true).
 3. Click **Run Inference Pipeline**:
-   - View predicted segment passenger loads (Model A).
-   - View binary congestion classification status (Model C).
-   - View headway recommendations and train allocations (Model D).
+   - View predicted segment passenger loads (via Crowd Count Regressor).
+   - View binary congestion classification status (via Congestion Classifier).
+   - View headway recommendations and train allocations (via Scheduling Optimizer).
 4. Click **Explain with Grok Copilot**:
    - This redirects you to the AI Assistant chat, pre-populating and auto-sending a natural language analysis request grounded in the prediction metrics.
 

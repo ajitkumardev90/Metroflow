@@ -1,4 +1,4 @@
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000";
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5001";
 
 // Helper to get auth headers
 const getHeaders = (contentType: string = "application/json") => {
@@ -135,6 +135,16 @@ export const api = {
     stationPerformance: () => request("/analytics/station-performance"),
     routePerformance: () => request("/analytics/route-performance"),
     trends: () => request("/analytics/trends"),
+  },
+
+  // Reports
+  reports: {
+    generate: (params: any = {}) => {
+      const q = new URLSearchParams(Object.fromEntries(
+        Object.entries(params).filter(([_, v]) => v !== undefined && v !== null && v !== "")
+      ) as any).toString();
+      return request(`/reports/generate?${q}`);
+    }
   },
 
   // 10. AI Chat Assistant

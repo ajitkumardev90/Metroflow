@@ -20,7 +20,9 @@ import {
   Menu,
   X,
   Bell,
-  CheckCircle
+  CheckCircle,
+  History,
+  FileText
 } from "lucide-react";
 import { api, API_BASE_URL } from "@/utils/api";
 
@@ -39,8 +41,10 @@ const navigationItems: SidebarItem[] = [
   { name: "Trains", href: "/trains", icon: Train, roles: ["admin", "manager", "user"] },
   { name: "Scheduling", href: "/scheduling", icon: Clock, roles: ["admin", "manager", "user"] },
   { name: "AI Predictions", href: "/predictions", icon: Cpu, roles: ["admin", "manager", "user"] },
+  { name: "Prediction History", href: "/history", icon: History, roles: ["admin", "manager", "user"] },
   { name: "Demand Forecast", href: "/forecast", icon: TrendingUp, roles: ["admin", "manager", "user"] },
   { name: "Analytics", href: "/analytics", icon: LayoutDashboard, roles: ["admin", "manager"] },
+  { name: "Report Generator", href: "/reports", icon: FileText, roles: ["admin", "manager"] },
   { name: "Alerts Center", href: "/alerts", icon: AlertTriangle, roles: ["admin", "manager", "user"] },
   { name: "MetroMind AI", href: "/assistant", icon: MessageSquareCode, roles: ["admin", "manager", "user"] },
   { name: "Admin Panel", href: "/admin", icon: Users, roles: ["admin"] },
@@ -66,7 +70,7 @@ export default function CommandCenterLayout({ children }: { children: React.Reac
     let reconnectTimeout: any;
 
     const connectWS = () => {
-      let wsUrl = "ws://127.0.0.1:5000/ws/updates";
+      let wsUrl = "ws://127.0.0.1:5001/ws/updates";
       try {
         const base = API_BASE_URL.startsWith("http")
           ? API_BASE_URL
@@ -77,12 +81,13 @@ export default function CommandCenterLayout({ children }: { children: React.Reac
           wsUrl = `${protocol}//${url.host}/ws/updates`;
         }
       } catch (e) {
-        console.error("Failed to parse API_BASE_URL for WebSocket:", e);
+        console.warn("Failed to parse API_BASE_URL for WebSocket:", e);
       }
+      console.log("[DEBUG] WebSocket target URL is:", wsUrl);
       ws = new WebSocket(wsUrl);
       
       ws.onopen = () => {
-        console.log("WebSocket linked successfully to MetroFlow core updates.");
+        console.log("WebSocket linked successfully to MetroFlow core updates at", wsUrl);
       };
 
       ws.onmessage = (event) => {
@@ -108,13 +113,13 @@ export default function CommandCenterLayout({ children }: { children: React.Reac
         }
       };
 
-      ws.onclose = () => {
-        console.log("WebSocket telemetry links disconnected. Retrying connection...");
+      ws.onclose = (event) => {
+        console.log(`WebSocket telemetry links disconnected (code: ${event.code}, reason: ${event.reason}). Retrying connection...`);
         reconnectTimeout = setTimeout(connectWS, 4000);
       };
 
       ws.onerror = (err) => {
-        console.error("WebSocket telemetry link error:", err);
+        console.warn(`WebSocket telemetry link warning for URL ${wsUrl}:`, err);
         ws.close();
       };
     };
@@ -217,12 +222,12 @@ export default function CommandCenterLayout({ children }: { children: React.Reac
   };
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-[#0b0f19] text-slate-200 font-mono">
+    <div className="flex h-screen w-screen overflow-hidden bg-[#0b0f19] text-slate-200 font-mono print:h-auto print:w-auto print:overflow-visible print:bg-white print:text-black">
       {/* Sidebar (Desktop) */}
       <aside
         className={`${
           sidebarOpen ? "w-64" : "w-20"
-        } relative z-20 flex h-full flex-col border-r border-slate-800/60 glass-sidebar transition-all duration-200 ease-in-out hidden md:flex`}
+        } relative z-20 flex h-full flex-col border-r border-slate-800/60 glass-sidebar transition-all duration-200 ease-in-out hidden md:flex print:hidden`}
       >
         {/* Sidebar Brand Header */}
         <div className="flex h-16 items-center justify-between px-5 border-b border-slate-800">
@@ -267,7 +272,7 @@ export default function CommandCenterLayout({ children }: { children: React.Reac
         </nav>
 
         {/* Sidebar Logout */}
-        <div className="p-4 border-t border-slate-800">
+        <div className="p-4 border-t border-slate-800 space-y-3 print:hidden">
           <button
             onClick={handleLogout}
             className="flex w-full items-center rounded-xl px-3 py-2.5 text-xs font-bold text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-950/40 transition-all cursor-pointer"
@@ -275,13 +280,14 @@ export default function CommandCenterLayout({ children }: { children: React.Reac
             <LogOut size={16} className="mr-3" />
             {sidebarOpen && <span>SECURE SIGNOUT</span>}
           </button>
+
         </div>
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex flex-1 flex-col overflow-hidden">
+      <div className="flex flex-1 flex-col overflow-hidden print:overflow-visible">
         {/* Topbar */}
-        <header className="flex h-16 w-full items-center justify-between border-b border-slate-800/60 glass-navbar px-6">
+        <header className="flex h-16 w-full items-center justify-between border-b border-slate-800/60 glass-navbar px-6 print:hidden">
           <div className="flex items-center space-x-4">
             <button className="md:hidden text-slate-400 hover:text-cyan-400" onClick={() => setSidebarOpen(!sidebarOpen)}>
               <Menu size={20} />
@@ -385,8 +391,13 @@ export default function CommandCenterLayout({ children }: { children: React.Reac
         )}
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-6 bg-[#0b0f19] cyber-grid">
-          {children}
+        <main className="flex-1 overflow-y-auto p-6 bg-[#0b0f19] cyber-grid print:p-0 print:overflow-visible print:bg-white flex flex-col justify-between">
+          <div className="flex-1 w-full">
+            {children}
+          </div>
+          <footer className="mt-8 pt-4 border-t border-slate-800/40 text-center text-[10px] text-slate-500 font-mono print:hidden">
+            created by Ajit with ❤️
+          </footer>
         </main>
       </div>
 

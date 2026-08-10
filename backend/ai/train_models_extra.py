@@ -54,9 +54,9 @@ print("Loading dataset for extra models...")
 df = pd.read_csv(DATA_FILE)
 
 # ----------------------------
-# MODEL B: Demand Forecasting (Hourly Demand at Station)
+# Passenger Demand Forecaster (Hourly Demand at Station)
 # ----------------------------
-print("\n--- Training Model B: Passenger Demand Forecaster ---")
+print("\n--- Training Passenger Demand Forecaster ---")
 # Aggregating count by Date, Hour, From_Station to get hourly demand
 agg_df = df.groupby(["Date", "Hour", "From_Station", "Weather", "Is_Holiday", "Day_Name", "Month"]).agg({
     "Passenger_Count": "sum"
@@ -106,15 +106,15 @@ b_mae = mean_absolute_error(y_b_test, b_preds)
 b_rmse = mean_squared_error(y_b_test, b_preds) ** 0.5
 b_r2 = r2_score(y_b_test, b_preds)
 
-print(f"Model B Baseline (Ridge) -> MAE: {b_base_mae:.2f}, R²: {b_base_r2:.4f}")
-print(f"Model B Regressor (HGBR) -> MAE: {b_mae:.2f}, RMSE: {b_rmse:.2f}, R²: {b_r2:.4f}")
+print(f"Demand Forecaster Baseline (Ridge) -> MAE: {b_base_mae:.2f}, R²: {b_base_r2:.4f}")
+print(f"Demand Forecaster Regressor (HGBR) -> MAE: {b_mae:.2f}, RMSE: {b_rmse:.2f}, R²: {b_r2:.4f}")
 joblib.dump(model_b, MODEL_B_FILE)
 
 
 # ----------------------------
-# MODEL C: Congestion / Peak-Hour Classification (Binary: Congested = 1 / 0)
+# Congestion Classifier (Binary: Congested = 1 / 0)
 # ----------------------------
-print("\n--- Training Model C: Congestion Status Classifier ---")
+print("\n--- Training Congestion Classifier ---")
 # Define congested status: count > 1200 passengers for a single trip record
 df["Congested"] = (df["Passenger_Count"] > 1200).astype(int)
 
@@ -155,8 +155,8 @@ rec = recall_score(y_c_test, c_preds, zero_division=0)
 f1 = f1_score(y_c_test, c_preds, zero_division=0)
 tn, fp, fn, tp = confusion_matrix(y_c_test, c_preds).ravel()
 
-print(f"Model C Baseline (LogReg) -> Accuracy: {base_acc:.4f}, F1: {base_f1:.4f}")
-print(f"Model C Classifier (HGBC) -> Accuracy: {acc:.4f}, Precision: {prec:.4f}, Recall: {rec:.4f}, F1: {f1:.4f}")
+print(f"Congestion Classifier Baseline (LogReg) -> Accuracy: {base_acc:.4f}, F1: {base_f1:.4f}")
+print(f"Congestion Classifier (HGBC) -> Accuracy: {acc:.4f}, Precision: {prec:.4f}, Recall: {rec:.4f}, F1: {f1:.4f}")
 joblib.dump(model_c, MODEL_C_FILE)
 
 

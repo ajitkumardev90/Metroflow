@@ -15,11 +15,11 @@ MetroFlow AI is a state-of-the-art Metro Crowd Management and Scheduling Command
    - Beautiful dark-themed **AI Smart City Metro Operations Command Center** dashboard with live telemetry indicators (delays, active alerts, total ridership counts).
    - Live Leaflet-based Geographic Heatmap highlighting station crowd densities.
 
-3. **Machine Learning Pipeline (scikit-learn Models A, B, C, D)**
-   - **Model A (Crowd Count Regressor)**: Predicting segment passenger count. Shrunk model pickle file size from 4.3 GB to **552 KB** with MAE = 100.06 and R² = 0.9790.
-   - **Model B (Passenger Demand Forecaster)**: Sequentially projects station passenger counts for the next 3 hours using lag-shift features. R² = 0.8826.
-   - **Model C (Congestion Status Classifier)**: Predicts threshold overcrowding status. Accuracy = 94.66%, F1 = 0.9634.
-   - **Model D (Scheduling Optimizer)**: Rule-based headway, frequency, and train allocation calculations.
+3. **Machine Learning Pipeline (scikit-learn Models)**
+   - **Crowd Count Regressor**: Predicting segment passenger count. Shrunk model pickle file size from 4.3 GB to **552 KB** with MAE = 100.06 and R² = 0.9790.
+   - **Passenger Demand Forecaster**: Sequentially projects station passenger counts for the next 3 hours using lag-shift features. R² = 0.8826.
+   - **Congestion Classifier**: Predicts threshold overcrowding status. Accuracy = 94.66%, F1 = 0.9634.
+   - **Scheduling Optimizer**: Rule-based headway, frequency, and train allocation calculations.
    
 4. **AI Metro Copilot (xAI Grok Grounding)**
    - Grounded LLM Chat Assistant utilizing live database telemetry (active alerts, congested stations, delayed train numbers) to ground its responses, falling back to simulated templates if keys are unconfigured.

@@ -73,7 +73,7 @@ export default function ForecastPage() {
     setForecasting(true);
 
     try {
-      // Query predicting route which triggers Model B next-hour forecasts automatically
+      // Query predicting route which triggers next-hour forecasts automatically
       const res = await api.predict.run({
         hour: parseInt(hour),
         day_name: "Monday",
@@ -128,15 +128,15 @@ export default function ForecastPage() {
           <h1 className="text-xl font-bold tracking-wider font-mono text-cyan-400 text-glow-cyan">
             DEMAND FORECAST & ML METRICS
           </h1>
-          <p className="text-xs text-slate-500 font-mono">Sequential demand forecasting (Model B) and validation statistics</p>
+          <p className="text-xs text-slate-500 font-mono">Sequential demand forecasting and validation statistics</p>
         </div>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          {/* Panel Left: Model B Simulator */}
+          {/* Panel Left: Demand Forecaster Simulator */}
           <div className="lg:col-span-2 space-y-6">
             <div className="rounded-xl glass-card p-5">
               <h3 className="font-mono text-sm font-bold text-slate-300 tracking-wider mb-4 border-b border-slate-800 pb-2">
-                DEMAND HORIZON SIMULATION (MODEL B)
+                DEMAND HORIZON SIMULATION (PASSENGER DEMAND FORECASTER)
               </h3>
 
               <form onSubmit={handleForecast} className="flex flex-wrap gap-4 items-end font-mono text-xs mb-6">
@@ -218,11 +218,11 @@ export default function ForecastPage() {
 
           {/* Panel Right: Sci-kit Learn Metrics */}
           <div className="space-y-6">
-            {/* Model A Evaluation */}
+            {/* Crowd Count Regressor Evaluation */}
             <div className="rounded-xl glass-card-glow-cyan p-5">
               <div className="flex items-center space-x-2 border-b border-slate-800 pb-2 mb-3">
                 <Cpu size={15} className="text-cyan-400" />
-                <h4 className="font-mono text-xs font-bold text-slate-300 uppercase tracking-widest">Model A: Count Regressor</h4>
+                <h4 className="font-mono text-xs font-bold text-slate-300 uppercase tracking-widest">Crowd Count Regressor</h4>
               </div>
               
               <div className="space-y-2 font-mono text-xs">
@@ -245,11 +245,11 @@ export default function ForecastPage() {
               </div>
             </div>
 
-            {/* Model B Evaluation */}
+            {/* Passenger Demand Forecaster Evaluation */}
             <div className="rounded-xl glass-card-glow-violet p-5">
               <div className="flex items-center space-x-2 border-b border-slate-800 pb-2 mb-3">
                 <TrendingUp size={15} className="text-violet-400" />
-                <h4 className="font-mono text-xs font-bold text-slate-300 uppercase tracking-widest">Model B: Demand Forecast</h4>
+                <h4 className="font-mono text-xs font-bold text-slate-300 uppercase tracking-widest">Passenger Demand Forecaster</h4>
               </div>
               
               <div className="space-y-2 font-mono text-xs">
@@ -272,11 +272,11 @@ export default function ForecastPage() {
               </div>
             </div>
 
-            {/* Model C Evaluation */}
+            {/* Congestion Classifier Evaluation */}
             <div className="rounded-xl glass-card p-5 border-t border-t-amber-500/20">
               <div className="flex items-center space-x-2 border-b border-slate-800 pb-2 mb-3">
                 <Award size={15} className="text-amber-400" />
-                <h4 className="font-mono text-xs font-bold text-slate-300 uppercase tracking-widest">Model C: Congest Classifier</h4>
+                <h4 className="font-mono text-xs font-bold text-slate-300 uppercase tracking-widest">Congestion Classifier</h4>
               </div>
               
               <div className="space-y-2 font-mono text-xs">

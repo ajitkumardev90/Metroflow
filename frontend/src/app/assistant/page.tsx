@@ -10,6 +10,15 @@ interface ChatMessage {
   text: string;
 }
 
+const SUGGESTED_PROMPTS = [
+  "Show active train delays",
+  "List congested stations",
+  "Are there any active alerts?",
+  "How many active trains are running?",
+  "Tell me about Jahangirpuri station",
+  "What is the passenger flow at Rajiv Chowk?"
+];
+
 export default function AssistantPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -146,6 +155,21 @@ export default function AssistantPage() {
             </div>
           )}
           <div ref={messagesEndRef} />
+        </div>
+
+        {/* Suggested prompts */}
+        <div className="flex flex-wrap gap-2 py-1.5 font-mono text-[10px]">
+          {SUGGESTED_PROMPTS.map((p, idx) => (
+            <button
+              key={idx}
+              type="button"
+              disabled={sending}
+              onClick={() => handleSendPrompt(p)}
+              className="rounded-full border border-slate-800 bg-[#091124]/40 py-1.5 px-3 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/30 hover:bg-cyan-500/5 transition-all text-left"
+            >
+              {p}
+            </button>
+          ))}
         </div>
 
         {/* Chat Input form */}
