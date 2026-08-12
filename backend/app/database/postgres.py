@@ -15,7 +15,14 @@ if not DATABASE_URL:
         f"{os.getenv('PG_DATABASE')}"
     )
 
-engine = create_engine(DATABASE_URL, echo=True)
+engine = create_engine(
+    DATABASE_URL,
+    echo=False,
+    pool_size=10,
+    max_overflow=20,
+    pool_timeout=30,
+    pool_recycle=1800
+)
 
 SessionLocal = sessionmaker(
     autocommit=False,
