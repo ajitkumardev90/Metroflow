@@ -53,8 +53,7 @@ services:
       - REDIS_PORT=6379
       - JWT_SECRET=metroflow_super_secret_key
       - JWT_EXPIRES_IN=7d
-      - XAI_API_KEY=${XAI_API_KEY:-}
-      - XAI_MODEL=${XAI_MODEL:-grok-2-1212}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
     ports:
       - "5000:5000"
     depends_on:
