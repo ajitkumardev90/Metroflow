@@ -396,7 +396,7 @@ export default function CommandCenterLayout({ children }: { children: React.Reac
             {children}
           </div>
           <footer className="mt-8 pt-4 border-t border-slate-800/40 text-center text-[10px] text-slate-500 font-mono print:hidden">
-            created by Ajit with ❤️
+            METROFLOW AI OPERATIONS PLATFORM :: COMMAND CENTER
           </footer>
         </main>
       </div>

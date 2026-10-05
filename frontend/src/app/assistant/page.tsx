@@ -131,9 +131,19 @@ export default function AssistantPage() {
               <div className={`rounded-xl border p-4 max-w-xl text-xs font-mono leading-relaxed whitespace-pre-line ${
                 m.sender === "user"
                   ? "bg-cyan-500/10 border-cyan-500/35 text-cyan-200"
-                  : "bg-slate-950/80 border-slate-850 text-slate-300"
+                  : "bg-slate-950/80 border-slate-850 text-slate-200 shadow-lg"
               }`}>
-                {m.text}
+                {m.text.split("\n").map((line, lIdx) => {
+                  // Format bullet points and bold highlights
+                  const formattedLine = line.replace(/\*\*(.*?)\*\*/g, '<strong class="text-cyan-400 font-bold">$1</strong>');
+                  return (
+                    <div 
+                      key={lIdx} 
+                      dangerouslySetInnerHTML={{ __html: formattedLine || "&nbsp;" }} 
+                      className={line.startsWith("-") || line.startsWith("*") || /^\d+\./.test(line) ? "pl-2 py-0.5" : "py-0.5"}
+                    />
+                  );
+                })}
               </div>
 
               {m.sender === "user" && (

@@ -122,187 +122,128 @@ export default function ForecastPage() {
 
   return (
     <CommandCenterLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 max-w-6xl mx-auto">
         {/* Header */}
         <div>
           <h1 className="text-xl font-bold tracking-wider font-mono text-cyan-400 text-glow-cyan">
-            DEMAND FORECAST & ML METRICS
+            DEMAND HORIZON FORECAST
           </h1>
-          <p className="text-xs text-slate-500 font-mono">Sequential demand forecasting and validation statistics</p>
+          <p className="text-xs text-slate-500 font-mono">Sequential hourly passenger demand forecasting and projection</p>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          {/* Panel Left: Demand Forecaster Simulator */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="rounded-xl glass-card p-5">
-              <h3 className="font-mono text-sm font-bold text-slate-300 tracking-wider mb-4 border-b border-slate-800 pb-2">
-                DEMAND HORIZON SIMULATION (PASSENGER DEMAND FORECASTER)
-              </h3>
-
-              <form onSubmit={handleForecast} className="flex flex-wrap gap-4 items-end font-mono text-xs mb-6">
-                <div className="w-48">
-                  <label className="block text-[9px] text-slate-500 uppercase mb-1">Station Focus</label>
-                  <select
-                    value={selectedStation}
-                    onChange={(e) => setSelectedStation(e.target.value)}
-                    className="w-full rounded bg-slate-900 border border-slate-800 py-2.5 px-3 text-slate-450 focus:outline-none focus:ring-1"
-                  >
-                    {stations.map(s => (
-                      <option key={s.station_id} value={s.station_name}>{s.station_name}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="w-28">
-                  <label className="block text-[9px] text-slate-500 uppercase mb-1">Base Hour</label>
-                  <select
-                    value={hour}
-                    onChange={(e) => setHour(e.target.value)}
-                    className="w-full rounded bg-slate-900 border border-slate-800 py-2 px-3 text-slate-200 focus:outline-none focus:ring-1"
-                  >
-                    {Array.from({ length: 22 }).map((_, i) => (
-                      <option key={i+5} value={i+5}>{(i+5).toString().padStart(2, '0')}:00</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="w-32">
-                  <label className="block text-[9px] text-slate-500 uppercase mb-1">Weather</label>
-                  <select
-                    value={weather}
-                    onChange={(e) => setWeather(e.target.value)}
-                    className="w-full rounded bg-slate-900 border border-slate-800 py-2 px-3 text-slate-200 focus:outline-none"
-                  >
-                    {["Clear", "Rain", "Heavy Rain", "Fog"].map(w => (
-                      <option key={w} value={w}>{w}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={forecasting}
-                  className="rounded-lg bg-cyan-500 py-2 px-4 font-bold text-slate-900 hover:bg-cyan-400 text-xs transition-all uppercase shrink-0"
-                >
-                  {forecasting ? "Forecasting..." : "Project Demand"}
-                </button>
-              </form>
-
-              {/* Area Chart */}
-              {forecastData.length > 0 ? (
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={forecastData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
-                      <defs>
-                        <linearGradient id="colorPax" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.4}/>
-                          <stop offset="95%" stopColor="#06b6d4" stopOpacity={0}/>
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                      <XAxis dataKey="name" stroke="#64748b" fontSize={10} />
-                      <YAxis stroke="#64748b" fontSize={10} />
-                      <Tooltip contentStyle={{ backgroundColor: "#0f172a", border: "1px solid #1e293b" }} />
-                      <Area type="monotone" dataKey="passengers" name="Predicted Demand" stroke="#06b6d4" strokeWidth={2} fillOpacity={1} fill="url(#colorPax)" />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
-              ) : (
-                <div className="flex h-64 flex-col items-center justify-center text-slate-600 border border-dashed border-slate-800 rounded-lg">
-                  <TrendingUp size={28} className="text-cyan-500/40 mb-1" />
-                  <p className="font-mono text-[9px] uppercase tracking-widest text-slate-500">Project upcoming station demands</p>
-                </div>
-              )}
-            </div>
+        {/* Demand Forecaster Simulator - Full Width */}
+        <div className="rounded-xl glass-card p-6 shadow-2xl border border-slate-800">
+          <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-800 pb-3 mb-6 gap-2">
+            <h3 className="font-mono text-sm font-bold text-slate-200 tracking-wider flex items-center space-x-2">
+              <TrendingUp size={16} className="text-cyan-400" />
+              <span>STATION DEMAND HORIZON SIMULATION</span>
+            </h3>
+            <span className="text-[10px] font-mono text-cyan-400/80 bg-cyan-950/40 border border-cyan-800/40 px-2.5 py-1 rounded-full w-fit">
+              LIVE PREDICTIVE ENGINE
+            </span>
           </div>
 
-          {/* Panel Right: Sci-kit Learn Metrics */}
-          <div className="space-y-6">
-            {/* Crowd Count Regressor Evaluation */}
-            <div className="rounded-xl glass-card-glow-cyan p-5">
-              <div className="flex items-center space-x-2 border-b border-slate-800 pb-2 mb-3">
-                <Cpu size={15} className="text-cyan-400" />
-                <h4 className="font-mono text-xs font-bold text-slate-300 uppercase tracking-widest">Crowd Count Regressor</h4>
-              </div>
-              
-              <div className="space-y-2 font-mono text-xs">
-                <div className="flex justify-between">
-                  <span className="text-slate-500">MAE (L1 Error)</span>
-                  <span className="text-cyan-400 font-bold">{modelAMetrics?.mae}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500">RMSE (Variance)</span>
-                  <span className="text-cyan-400 font-bold">{modelAMetrics?.rmse}</span>
-                </div>
-                <div className="flex justify-between border-b border-slate-850 pb-2">
-                  <span className="text-slate-500">R² Coefficient</span>
-                  <span className="text-green-400 font-bold">{modelAMetrics?.r2}</span>
-                </div>
-                
-                <div className="pt-1.5 text-[9px] text-slate-500">
-                  Baseline (LinearRegression) MAE: {modelAMetrics?.baseline_mae} (R²: {modelAMetrics?.baseline_r2})
-                </div>
-              </div>
+          <form onSubmit={handleForecast} className="flex flex-wrap gap-4 items-end font-mono text-xs mb-6">
+            <div className="flex-1 min-w-[200px]">
+              <label className="block text-[9px] text-slate-400 uppercase tracking-wider mb-1.5 font-bold">
+                Station Focus
+              </label>
+              <select
+                value={selectedStation}
+                onChange={(e) => setSelectedStation(e.target.value)}
+                className="w-full rounded-xl bg-slate-900 border border-slate-800 py-2.5 px-3 text-slate-200 focus:outline-none focus:border-cyan-500 transition-all font-mono"
+              >
+                {stations.map(s => (
+                  <option key={s.station_id} value={s.station_name}>{s.station_name}</option>
+                ))}
+              </select>
             </div>
 
-            {/* Passenger Demand Forecaster Evaluation */}
-            <div className="rounded-xl glass-card-glow-violet p-5">
-              <div className="flex items-center space-x-2 border-b border-slate-800 pb-2 mb-3">
-                <TrendingUp size={15} className="text-violet-400" />
-                <h4 className="font-mono text-xs font-bold text-slate-300 uppercase tracking-widest">Passenger Demand Forecaster</h4>
-              </div>
-              
-              <div className="space-y-2 font-mono text-xs">
-                <div className="flex justify-between">
-                  <span className="text-slate-500">Lag MAE</span>
-                  <span className="text-violet-400 font-bold">{modelExtraMetrics?.model_b?.mae}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500">Lag RMSE</span>
-                  <span className="text-violet-400 font-bold">{modelExtraMetrics?.model_b?.rmse}</span>
-                </div>
-                <div className="flex justify-between border-b border-slate-850 pb-2">
-                  <span className="text-slate-500">R² Coefficient</span>
-                  <span className="text-green-400 font-bold">{modelExtraMetrics?.model_b?.r2}</span>
-                </div>
-                
-                <div className="pt-1.5 text-[9px] text-slate-500">
-                  Baseline (Ridge) MAE: {modelExtraMetrics?.model_b?.baseline_mae} (R²: {modelExtraMetrics?.model_b?.baseline_r2})
-                </div>
-              </div>
+            <div className="w-36">
+              <label className="block text-[9px] text-slate-400 uppercase tracking-wider mb-1.5 font-bold">
+                Base Hour
+              </label>
+              <select
+                value={hour}
+                onChange={(e) => setHour(e.target.value)}
+                className="w-full rounded-xl bg-slate-900 border border-slate-800 py-2.5 px-3 text-slate-200 focus:outline-none focus:border-cyan-500 transition-all font-mono"
+              >
+                {Array.from({ length: 22 }).map((_, i) => (
+                  <option key={i+5} value={i+5}>{(i+5).toString().padStart(2, '0')}:00</option>
+                ))}
+              </select>
             </div>
 
-            {/* Congestion Classifier Evaluation */}
-            <div className="rounded-xl glass-card p-5 border-t border-t-amber-500/20">
-              <div className="flex items-center space-x-2 border-b border-slate-800 pb-2 mb-3">
-                <Award size={15} className="text-amber-400" />
-                <h4 className="font-mono text-xs font-bold text-slate-300 uppercase tracking-widest">Congestion Classifier</h4>
+            <div className="w-36">
+              <label className="block text-[9px] text-slate-400 uppercase tracking-wider mb-1.5 font-bold">
+                Weather
+              </label>
+              <select
+                value={weather}
+                onChange={(e) => setWeather(e.target.value)}
+                className="w-full rounded-xl bg-slate-900 border border-slate-800 py-2.5 px-3 text-slate-200 focus:outline-none focus:border-cyan-500 transition-all font-mono"
+              >
+                {["Clear", "Rain", "Heavy Rain", "Fog"].map(w => (
+                  <option key={w} value={w}>{w}</option>
+                ))}
+              </select>
+            </div>
+
+            <button
+              type="submit"
+              disabled={forecasting}
+              className="rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 py-2.5 px-6 font-mono text-xs font-bold text-slate-950 hover:from-cyan-400 hover:to-indigo-500 hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all uppercase shrink-0 disabled:opacity-50 cursor-pointer"
+            >
+              {forecasting ? "Projecting..." : "Project Demand"}
+            </button>
+          </form>
+
+          {/* Area Chart Container */}
+          {forecastData.length > 0 ? (
+            <div className="space-y-4">
+              <div className="h-80 w-full pt-2">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={forecastData} margin={{ top: 10, right: 20, left: 10, bottom: 10 }}>
+                    <defs>
+                      <linearGradient id="colorPax" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.45}/>
+                        <stop offset="95%" stopColor="#06b6d4" stopOpacity={0.02}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                    <XAxis dataKey="name" stroke="#64748b" fontSize={11} fontStyle="italic" />
+                    <YAxis stroke="#64748b" fontSize={11} />
+                    <Tooltip contentStyle={{ backgroundColor: "#0f172a", borderColor: "#334155", borderRadius: "10px", fontSize: "12px", fontFamily: "monospace" }} />
+                    <Area type="monotone" dataKey="passengers" name="Forecasted Passengers" stroke="#06b6d4" strokeWidth={3} fillOpacity={1} fill="url(#colorPax)" />
+                  </AreaChart>
+                </ResponsiveContainer>
               </div>
-              
-              <div className="space-y-2 font-mono text-xs">
-                <div className="flex justify-between">
-                  <span className="text-slate-500">Accuracy Score</span>
-                  <span className="text-slate-200 font-bold">{(modelExtraMetrics?.model_c?.accuracy * 100).toFixed(2)}%</span>
+
+              {/* Simulation Quick Summary */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-slate-800/80 font-mono text-xs">
+                <div className="rounded-lg bg-slate-900/60 border border-slate-800 p-3">
+                  <div className="text-[9px] uppercase text-slate-500">Selected Station</div>
+                  <div className="text-sm font-bold text-cyan-400 truncate">{selectedStation}</div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500">Precision</span>
-                  <span className="text-slate-200 font-bold">{modelExtraMetrics?.model_c?.precision}</span>
+                <div className="rounded-lg bg-slate-900/60 border border-slate-800 p-3">
+                  <div className="text-[9px] uppercase text-slate-500">Base Time Horizon</div>
+                  <div className="text-sm font-bold text-slate-200">{hour.toString().padStart(2, '0')}:00 hrs</div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500">Recall</span>
-                  <span className="text-slate-200 font-bold">{modelExtraMetrics?.model_c?.recall}</span>
-                </div>
-                <div className="flex justify-between border-b border-slate-850 pb-2">
-                  <span className="text-slate-500">F1 score</span>
-                  <span className="text-green-400 font-bold">{modelExtraMetrics?.model_c?.f1}</span>
-                </div>
-                
-                <div className="pt-1.5 text-[9px] text-slate-500">
-                  Baseline (LogReg) Accuracy: {(modelExtraMetrics?.model_c?.baseline_accuracy * 100).toFixed(2)}% (F1: {modelExtraMetrics?.model_c?.baseline_f1})
+                <div className="rounded-lg bg-slate-900/60 border border-slate-800 p-3">
+                  <div className="text-[9px] uppercase text-slate-500">Peak Demand Projection</div>
+                  <div className="text-sm font-bold text-amber-400">
+                    {Math.max(...forecastData.map(d => d.passengers || 0))} pax
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="flex h-72 flex-col items-center justify-center text-slate-600 border border-dashed border-slate-800/80 rounded-xl bg-slate-950/20">
+              <TrendingUp size={36} className="text-cyan-500/30 mb-2 animate-pulse" />
+              <p className="font-mono text-xs text-slate-400 font-semibold mb-1">Select a station and click &apos;Project Demand&apos;</p>
+              <p className="font-mono text-[10px] text-slate-600">Generates sequential multi-hour passenger surge forecast curves</p>
+            </div>
+          )}
         </div>
       </div>
     </CommandCenterLayout>
