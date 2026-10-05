@@ -313,8 +313,8 @@ IMPORTANT INSTRUCTIONS:
         
     messages.append({"role": "user", "content": message})
     
-    # Check if Google Gemini API key is configured first as a reliable alternative
-    gemini_key = os.getenv("GEMINI_API_KEY", "")
+    # Check if Google Gemini API key is configured
+    gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY", "")
     if gemini_key:
         contents = []
         for h in history[-6:]:
@@ -328,7 +328,7 @@ IMPORTANT INSTRUCTIONS:
             "parts": [{"text": message}]
         })
         
-        models_to_try = ["gemini-3.5-flash", "gemini-2.0-flash", "gemini-3.5-flash-lite", "gemini-flash-latest"]
+        models_to_try = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro", "gemini-2.0-flash-lite"]
         for model_name in models_to_try:
             gemini_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={gemini_key}"
             gemini_data = {
@@ -348,7 +348,7 @@ IMPORTANT INSTRUCTIONS:
                     headers={"Content-Type": "application/json"},
                     method="POST"
                 )
-                with urllib.request.urlopen(req, timeout=3) as response:
+                with urllib.request.urlopen(req, timeout=12) as response:
                     res_body = response.read().decode("utf-8")
                     res_data = json.loads(res_body)
                     reply = res_data["candidates"][0]["content"]["parts"][0]["text"]
@@ -357,57 +357,30 @@ IMPORTANT INSTRUCTIONS:
             except urllib.error.HTTPError as e:
                 print(f"Gemini API HTTP Error {e.code} for model '{model_name}' (google_search)")
                 if e.code in [400, 401, 403]:
-                    print("Gemini API key is invalid or unauthorized. Aborting further attempts.")
-                    break
+                    print("Gemini API key is invalid or unauthorized. Trying next fallback...")
             except Exception as e:
-                print(f"Error calling Gemini API with google_search for model '{model_name}': {e}. Trying google_search_retrieval...")
+                print(f"Error calling Gemini API with google_search for model '{model_name}': {e}. Trying without tools...")
                 try:
-                    gemini_data["tools"] = [{"google_search_retrieval": {}}]
+                    gemini_data.pop("tools", None)
                     req = urllib.request.Request(
                         gemini_url,
                         data=json.dumps(gemini_data).encode("utf-8"),
                         headers={"Content-Type": "application/json"},
                         method="POST"
                     )
-                    with urllib.request.urlopen(req, timeout=3) as response:
+                    with urllib.request.urlopen(req, timeout=12) as response:
                         res_body = response.read().decode("utf-8")
                         res_data = json.loads(res_body)
                         reply = res_data["candidates"][0]["content"]["parts"][0]["text"]
-                        print(f"[SUCCESS] Gemini API responded using model '{model_name}' with google_search_retrieval tool")
+                        print(f"[SUCCESS] Gemini API responded using model '{model_name}' without tools")
                         return reply
-                except urllib.error.HTTPError as e:
-                    print(f"Gemini API HTTP Error {e.code} for model '{model_name}' (google_search_retrieval)")
-                    if e.code in [400, 401, 403]:
-                        print("Gemini API key is invalid or unauthorized. Aborting further attempts.")
-                        break
-                except Exception as e2:
-                    print(f"Error calling Gemini API with google_search_retrieval for model '{model_name}': {e2}. Trying without tools...")
-                    try:
-                        gemini_data.pop("tools", None)
-                        req = urllib.request.Request(
-                            gemini_url,
-                            data=json.dumps(gemini_data).encode("utf-8"),
-                            headers={"Content-Type": "application/json"},
-                            method="POST"
-                        )
-                        with urllib.request.urlopen(req, timeout=3) as response:
-                            res_body = response.read().decode("utf-8")
-                            res_data = json.loads(res_body)
-                            reply = res_data["candidates"][0]["content"]["parts"][0]["text"]
-                            print(f"[SUCCESS] Gemini API responded using model '{model_name}' without tools")
-                            return reply
-                    except urllib.error.HTTPError as e:
-                        print(f"Gemini API HTTP Error {e.code} for model '{model_name}' (no tools)")
-                        if e.code in [400, 401, 403]:
-                            print("Gemini API key is invalid or unauthorized. Aborting further attempts.")
-                            break
-                    except Exception as e3:
-                        print(f"Error calling Gemini API without tools for model '{model_name}': {e3}")
-
+                except Exception as e3:
+                    print(f"Error calling Gemini API without tools for model '{model_name}': {e3}")
 
     # Check if Grok API key is configured
+    api_key = os.getenv("XAI_API_KEY") or os.getenv("GROK_API_KEY", "")
     if not api_key:
-        print("XAI_API_KEY not found. Simulating MetroMind Response.")
+        print("Neither GEMINI_API_KEY nor XAI_API_KEY found. Using MetroMind grounded engine.")
         return generate_simulated_grok_response(db, message, role, telemetry, history)
 
     # Call xAI Grok API via urllib
@@ -419,8 +392,7 @@ IMPORTANT INSTRUCTIONS:
     data = {
         "model": model,
         "messages": messages,
-        "temperature": 0.2,
-        "web_search": True
+        "temperature": 0.2
     }
     
     try:
