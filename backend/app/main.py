@@ -55,7 +55,10 @@ app.add_middleware(
 # ==========================
 # Create PostgreSQL Tables
 # ==========================
-Base.metadata.create_all(bind=engine)
+try:
+    Base.metadata.create_all(bind=engine)
+except Exception as e:
+    print(f"[Warning] Database tables initialization deferred: {e}")
 
 # ==========================
 # Register Routers
