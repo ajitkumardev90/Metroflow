@@ -1,28 +1,39 @@
 @import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
 
-@layer base {
-  :root {
-    --background: 222 47% 11%;
-    --foreground: 210 20% 98%;
-    --card: 222 47% 13%;
-    --card-foreground: 210 20% 98%;
-    --popover: 222 47% 11%;
-    --popover-foreground: 210 20% 98%;
-    --primary: 180 100% 50%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 263.4 70% 50.4%;
-    --secondary-foreground: 210 20% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 20% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 20% 98%;
-    --border: 217.2 32.6% 20%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 180 100% 50%;
-    --radius: 12px;
-  }
+/* Leaflet map container fixes */
+.leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 10 !important;
+  background-color: #070b19 !important;
+}
+
+.leaflet-dark-tiles {
+  filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+}
+
+:root {
+  --background: 222 47% 11%;
+  --foreground: 210 20% 98%;
+  --card: 222 47% 13%;
+  --card-foreground: 210 20% 98%;
+  --popover: 222 47% 11%;
+  --popover-foreground: 210 20% 98%;
+  --primary: 180 100% 50%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+  --secondary: 263.4 70% 50.4%;
+  --secondary-foreground: 210 20% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 20% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 20% 98%;
+  --border: 217.2 32.6% 20%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 180 100% 50%;
+  --radius: 12px;
 }
 
 body {

@@ -57,7 +57,9 @@ export default function CrowdMap({ stations }: CrowdMapProps) {
         <MapAutoResizer />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" // Dark premium theme tiles
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          className="leaflet-dark-tiles"
+          maxZoom={19}
         />
         
         {stations.map((station) => {
