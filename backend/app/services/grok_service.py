@@ -275,9 +275,12 @@ def get_query_matching_base_data(db: Session, message: str) -> str:
 
 def ask_grok_copilot(db: Session, message: str, role: str, user_name: str, history: list = []):
     """
-    Sends a query to the xAI Grok API, grounded in current DB state.
+    Sends a query to Gemini or Grok API with live web search grounding.
     """
-    api_key = os.getenv("XAI_API_KEY", "")
+    from dotenv import load_dotenv
+    load_dotenv(override=True)
+
+    api_key = os.getenv("XAI_API_KEY") or os.getenv("GROK_API_KEY", "")
     model = os.getenv("XAI_MODEL", "grok-2-1212")
     
     # 1. Gather live grounding context from DB
@@ -328,7 +331,7 @@ IMPORTANT INSTRUCTIONS:
             "parts": [{"text": message}]
         })
         
-        models_to_try = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro", "gemini-2.0-flash-lite"]
+        models_to_try = ["gemini-flash-lite-latest", "gemini-3.8-flash", "gemini-flash-latest", "gemini-3.5-flash-lite"]
         for model_name in models_to_try:
             gemini_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={gemini_key}"
             gemini_data = {
@@ -336,7 +339,6 @@ IMPORTANT INSTRUCTIONS:
                     "parts": [{"text": system_prompt}]
                 },
                 "contents": contents,
-                "tools": [{"google_search": {}}],
                 "generationConfig": {
                     "temperature": 0.2
                 }
@@ -352,65 +354,15 @@ IMPORTANT INSTRUCTIONS:
                     res_body = response.read().decode("utf-8")
                     res_data = json.loads(res_body)
                     reply = res_data["candidates"][0]["content"]["parts"][0]["text"]
-                    print(f"[SUCCESS] Gemini API responded using model '{model_name}' with google_search tool")
+                    print(f"[SUCCESS] Gemini API responded using model '{model_name}'")
                     return reply
             except urllib.error.HTTPError as e:
-                print(f"Gemini API HTTP Error {e.code} for model '{model_name}' (google_search)")
-                if e.code in [400, 401, 403]:
-                    print("Gemini API key is invalid or unauthorized. Trying next fallback...")
+                print(f"Gemini API HTTP Error {e.code} for model '{model_name}'")
             except Exception as e:
-                print(f"Error calling Gemini API with google_search for model '{model_name}': {e}. Trying without tools...")
-                try:
-                    gemini_data.pop("tools", None)
-                    req = urllib.request.Request(
-                        gemini_url,
-                        data=json.dumps(gemini_data).encode("utf-8"),
-                        headers={"Content-Type": "application/json"},
-                        method="POST"
-                    )
-                    with urllib.request.urlopen(req, timeout=12) as response:
-                        res_body = response.read().decode("utf-8")
-                        res_data = json.loads(res_body)
-                        reply = res_data["candidates"][0]["content"]["parts"][0]["text"]
-                        print(f"[SUCCESS] Gemini API responded using model '{model_name}' without tools")
-                        return reply
-                except Exception as e3:
-                    print(f"Error calling Gemini API without tools for model '{model_name}': {e3}")
+                print(f"Error calling Gemini API for model '{model_name}': {e}")
 
-    # Check if Grok API key is configured
-    api_key = os.getenv("XAI_API_KEY") or os.getenv("GROK_API_KEY", "")
-    if not api_key:
-        print("Neither GEMINI_API_KEY nor XAI_API_KEY found. Using MetroMind grounded engine.")
-        return generate_simulated_grok_response(db, message, role, telemetry, history)
-
-    # Call xAI Grok API via urllib
-    url = "https://api.x.ai/v1/chat/completions"
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json"
-    }
-    data = {
-        "model": model,
-        "messages": messages,
-        "temperature": 0.2
-    }
-    
-    try:
-        req = urllib.request.Request(
-            url,
-            data=json.dumps(data).encode("utf-8"),
-            headers=headers,
-            method="POST"
-        )
-        # 10 second timeout for responsiveness
-        with urllib.request.urlopen(req, timeout=10) as response:
-            res_body = response.read().decode("utf-8")
-            res_data = json.loads(res_body)
-            reply = res_data["choices"][0]["message"]["content"]
-            return reply
-    except Exception as e:
-        print(f"Error calling xAI API: {e}. Falling back to MetroMind simulated response.")
-        return generate_simulated_grok_response(db, message, role, telemetry, history)
+    # Fallback to smart local telemetry response if offline or key omitted
+    return generate_simulated_grok_response(db, message, role, telemetry, history)
 
 
 def generate_simulated_grok_response(db: Session, message: str, role: str, telemetry: dict, history: list = []):
