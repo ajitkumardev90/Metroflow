@@ -1,7 +1,5 @@
-"use client";
-
-import React from "react";
-import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet";
+import React, { useEffect } from "react";
+import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
@@ -13,6 +11,17 @@ if (typeof window !== "undefined") {
     iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
     shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
   });
+}
+
+function MapAutoResizer() {
+  const map = useMap();
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 200);
+    return () => clearTimeout(timer);
+  }, [map]);
+  return null;
 }
 
 interface CrowdMapProps {
@@ -45,6 +54,7 @@ export default function CrowdMap({ stations }: CrowdMapProps) {
         scrollWheelZoom={true}
         style={{ height: "100%", width: "100%" }}
       >
+        <MapAutoResizer />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" // Dark premium theme tiles

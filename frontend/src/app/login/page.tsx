@@ -186,48 +186,6 @@ export default function LoginPage() {
               )}
             </button>
           </form>
-
-          {/* Quick Demo Access Credentials */}
-          <div className="mt-6 pt-5 border-t border-slate-800/80">
-            <div className="text-[9px] uppercase tracking-widest text-slate-500 font-bold mb-2.5 text-center">
-              Quick 1-Click Demo Access
-            </div>
-            <div className="grid grid-cols-3 gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setIsLogin(true);
-                  setEmail("admin@metroflow.ai");
-                  setPassword("admin123");
-                }}
-                className="rounded-lg border border-cyan-500/30 bg-cyan-950/20 px-2 py-2 text-[9px] font-bold text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400 transition-all cursor-pointer text-center"
-              >
-                Admin
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setIsLogin(true);
-                  setEmail("manager@metroflow.ai");
-                  setPassword("manager123");
-                }}
-                className="rounded-lg border border-indigo-500/30 bg-indigo-950/20 px-2 py-2 text-[9px] font-bold text-indigo-300 hover:bg-indigo-500/20 hover:border-indigo-400 transition-all cursor-pointer text-center"
-              >
-                Manager
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setIsLogin(true);
-                  setEmail("user@metroflow.ai");
-                  setPassword("user123");
-                }}
-                className="rounded-lg border border-slate-700 bg-slate-900/40 px-2 py-2 text-[9px] font-bold text-slate-300 hover:bg-slate-800 hover:border-slate-500 transition-all cursor-pointer text-center"
-              >
-                User
-              </button>
-            </div>
-          </div>
         </div>
 
         {/* Security advisory footer */}
