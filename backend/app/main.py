@@ -55,17 +55,22 @@ app.add_middleware(
 # ==========================
 # Create PostgreSQL Tables
 # ==========================
-try:
-    Base.metadata.create_all(bind=engine)
-    # Check if database needs seeding on cloud deployments
+import threading
+
+def _background_seed_check():
     try:
         with SessionLocal() as db_session:
             if db_session.query(Station).count() == 0:
-                print("[INFO] Empty database detected on startup. Auto-seeding initial transit dataset...")
+                print("[INFO] Empty database detected. Auto-seeding initial transit dataset in background...")
                 from etl.import_passenger_data import seed_database
                 seed_database()
+                print("[INFO] Database seeding complete!")
     except Exception as seed_err:
         print(f"[Notice] Auto-seed check finished: {seed_err}")
+
+try:
+    Base.metadata.create_all(bind=engine)
+    threading.Thread(target=_background_seed_check, daemon=True).start()
 except Exception as e:
     print(f"[Warning] Database tables initialization deferred: {e}")
 
