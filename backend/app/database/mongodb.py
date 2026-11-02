@@ -6,7 +6,9 @@ load_dotenv()
 
 client = MongoClient(
     os.getenv("MONGODB_URI"),
-    serverSelectionTimeoutMS=5000
+    serverSelectionTimeoutMS=2000,
+    connectTimeoutMS=2000,
+    socketTimeoutMS=2000
 )
 
 try:

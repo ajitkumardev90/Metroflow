@@ -63,41 +63,27 @@ export default function Dashboard() {
       const parsedUser = userStr ? JSON.parse(userStr) : null;
       const role = parsedUser?.role || "user";
 
-      // 1. Fetch summary metrics
-      try {
-        const sum = await api.analytics.summary();
-        setSummary(sum);
-      } catch (err) {
-        console.error("Failed to fetch dashboard summary:", err);
-      }
+      // Fetch telemetry and metrics in parallel for instant render
+      const promises: Promise<any>[] = [
+        api.analytics.summary().then(setSummary).catch(err => console.error("Failed to fetch dashboard summary:", err)),
+        api.analytics.trends().then(setTrends).catch(err => console.error("Failed to fetch ridership trends:", err))
+      ];
 
-      // 2. Fetch route performance if admin or manager
       if (role === "admin" || role === "manager") {
-        try {
-          const routeData = await api.analytics.routePerformance();
-          setRoutePerformance(routeData);
-        } catch (err) {
-          console.error("Failed to fetch route performance:", err);
-        }
+        promises.push(
+          api.analytics.routePerformance().then(setRoutePerformance).catch(err => console.error("Failed to fetch route performance:", err))
+        );
       }
 
-      // 3. Fetch trends
-      try {
-        const trendData = await api.analytics.trends();
-        setTrends(trendData);
-      } catch (err) {
-        console.error("Failed to fetch ridership trends:", err);
-      }
-      
-      // 4. Fetch MetroMind AI summary
-      try {
-        const chatRes = await api.assistant.chat("Give me a 2-sentence bulleted operational recommendation card based on current delays.");
-        setAiInsight(chatRes.response);
-      } catch (e) {
-        setAiInsight("Operations Recommendation: Peak ridership detected. Keep Red Line headways at 3.5 minutes. Standby trains are ready for dispatch.");
-      }
-      
+      await Promise.all(promises);
       setLoading(false);
+
+      // Fetch MetroMind Gemini AI operational advisory asynchronously
+      api.assistant.chat("Give me a 2-sentence bulleted operational recommendation card based on current delays.")
+        .then(res => setAiInsight(res.response))
+        .catch(() => {
+          setAiInsight("Operations Recommendation: Peak ridership detected. Keep Red Line headways at 3.5 minutes. Standby trains are ready for dispatch.");
+        });
     };
 
     fetchData();

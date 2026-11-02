@@ -4,7 +4,7 @@ from sqlalchemy import text
 import os
 
 from app.database.mongodb import mongodb
-from app.database.postgres import engine
+from app.database.postgres import engine, SessionLocal
 from app.database.base import Base
 
 # ==========================
@@ -57,6 +57,15 @@ app.add_middleware(
 # ==========================
 try:
     Base.metadata.create_all(bind=engine)
+    # Check if database needs seeding on cloud deployments
+    try:
+        with SessionLocal() as db_session:
+            if db_session.query(Station).count() == 0:
+                print("[INFO] Empty database detected on startup. Auto-seeding initial transit dataset...")
+                from etl.import_passenger_data import seed_database
+                seed_database()
+    except Exception as seed_err:
+        print(f"[Notice] Auto-seed check finished: {seed_err}")
 except Exception as e:
     print(f"[Warning] Database tables initialization deferred: {e}")
 

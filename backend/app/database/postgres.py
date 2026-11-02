@@ -6,13 +6,16 @@ from sqlalchemy.orm import sessionmaker
 load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
-if not DATABASE_URL:
+if DATABASE_URL:
+    if DATABASE_URL.startswith("postgres://"):
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+else:
     DATABASE_URL = (
-        f"postgresql://{os.getenv('PG_USER')}:"
-        f"{os.getenv('PG_PASSWORD')}@"
-        f"{os.getenv('PG_HOST')}:"
-        f"{os.getenv('PG_PORT')}/"
-        f"{os.getenv('PG_DATABASE')}"
+        f"postgresql://{os.getenv('PG_USER', 'postgres')}:"
+        f"{os.getenv('PG_PASSWORD', '')}@"
+        f"{os.getenv('PG_HOST', 'localhost')}:"
+        f"{os.getenv('PG_PORT', '5432')}/"
+        f"{os.getenv('PG_DATABASE', 'metroflow')}"
     )
 
 engine = create_engine(

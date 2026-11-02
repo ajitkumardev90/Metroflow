@@ -9,8 +9,7 @@ from app.database.postgres import get_db
 from app.middleware.auth import require_roles
 from app.models.prediction_history import PredictionHistory
 from app.repositories.analytics_repository import get_station_performance_metrics, get_route_performance_metrics
-from app.services.alert_service import fetch_system_alerts
-from app.services.grok_service import ask_grok_copilot
+from app.services.grok_service import ask_gemini_copilot
 
 router = APIRouter(
     prefix="/reports",
@@ -106,7 +105,7 @@ def generate_report(
         )
         
         try:
-            ai_insights = ask_grok_copilot(
+            ai_insights = ask_gemini_copilot(
                 db=db,
                 message=grok_prompt,
                 role="manager",

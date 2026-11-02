@@ -21,15 +21,13 @@ db = SessionLocal()
 
 # Base directory setup
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CSV_PATH = os.path.abspath(
-    os.path.join(
-        BASE_DIR,
-        "..",
-        "EDA",
-        "cleaned_data",
-        "delhi_metro_network_clean.csv"
+bundled_csv = os.path.join(BASE_DIR, "etl", "data", "delhi_metro_network_clean.csv")
+if os.path.exists(bundled_csv):
+    CSV_PATH = os.path.abspath(bundled_csv)
+else:
+    CSV_PATH = os.path.abspath(
+        os.path.join(BASE_DIR, "..", "EDA", "cleaned_data", "delhi_metro_network_clean.csv")
     )
-)
 
 def get_route_color(line_name):
     colors = {

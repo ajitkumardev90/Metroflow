@@ -7,7 +7,7 @@ import threading
 
 from app.database.postgres import get_db
 from app.middleware.auth import require_roles
-from app.services.grok_service import ask_grok_copilot
+from app.services.grok_service import ask_gemini_copilot
 from app.database.redis_db import get_redis
 
 router = APIRouter(
@@ -78,7 +78,7 @@ def chat_with_assistant(
     db: Session = Depends(get_db)
 ):
     """
-    Role-aware grounded assistant copilot chat with Grok/xAI.
+    Role-aware grounded assistant copilot chat with Google Gemini.
     """
     user_id = current_user.get("id", "unknown_user")
     if not check_rate_limit(user_id):
@@ -91,7 +91,7 @@ def chat_with_assistant(
     user_name = current_user.get("fullName", "Metro Employee")
     
     try:
-        reply = ask_grok_copilot(
+        reply = ask_gemini_copilot(
             db=db,
             message=request.message,
             role=user_role,

@@ -1,0 +1,39 @@
+services:
+  # ----------------------------------------------------
+  # MetroFlow AI Backend (FastAPI Web Service)
+  # ----------------------------------------------------
+  - type: web
+    name: metroflow-backend
+    runtime: python
+    region: oregon
+    plan: free
+    rootDir: backend
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: DATABASE_URL
+        fromDatabase:
+          name: metroflow-postgres
+          property: connectionString
+      - key: MONGODB_URI
+        sync: false # Set in Render dashboard or connect to Atlas
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: GEMINI_API_KEY
+        sync: false # Set in Render dashboard
+
+databases:
+  # ----------------------------------------------------
+  # Managed PostgreSQL Database
+  # ----------------------------------------------------
+  - name: metroflow-postgres
+    plan: free
+    region: oregon
+    databaseName: metroflow
+    user: metroflow_user

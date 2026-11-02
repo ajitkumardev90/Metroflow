@@ -209,7 +209,7 @@ export default function LandingPage() {
           </div>
           <h3 className="text-xs font-black tracking-widest text-slate-200 uppercase font-mono">3. MetroMind AI</h3>
           <p className="text-[11px] text-slate-400 leading-normal font-sans">
-            xAI Grok-powered chat grounded in postgres database schema logs. Explains predictions and outlines delay recovery headways.
+            Google Gemini-powered operations copilot grounded in real-time telemetry. Explains predictions and outlines delay recovery headways.
           </p>
         </div>
       </section>
